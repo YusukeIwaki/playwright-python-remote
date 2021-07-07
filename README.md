@@ -7,7 +7,7 @@ Enables us to execute [playwright-python](https://github.com/microsoft/playwrigh
 ## Setup
 
 ```
-pip install playwright-remote
+pip install git+https://github.com/YusukeIwaki/playwright-python-remote
 ```
 
 ## Example
