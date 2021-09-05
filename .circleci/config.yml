@@ -1,42 +1,117 @@
 version: 2.1
 
-orbs:
-  # The python orb contains a set of prepackaged CircleCI configuration you can use repeatedly in your configuration files
-  # Orb commands and jobs help you with common scripting around a language/tool
-  # so you dont have to copy and paste it everywhere.
-  # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/python
-  python: circleci/python@1.2
-
 workflows:
-  sample:  # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run. 
-    # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows 
+  test:
     jobs:
-      - build-and-test
+      - playwright_1_11
+      - playwright_1_12
+      - playwright_1_13
+      - playwright_1_14
 
+# https://mcr.microsoft.com/v2/playwright/tags/list
+# https://pypi.org/project/playwright/#history
 
 jobs:
-  build-and-test:  # This is the name of the job, feel free to change it to better match what you're trying to do!
-    # These next lines defines a Docker executors: https://circleci.com/docs/2.0/executor-types/
-    # You can specify an image from Dockerhub or use one of the convenience images from CircleCI's Developer Hub
-    # A list of available CircleCI Docker convenience images are available here: https://circleci.com/developer/images/image/cimg/python
-    # The executor is the environment in which the steps below will be executed - below will use a python 3.9 container
-    # Change the version below to your required version of python
+  playwright_1_11:
     docker:
-      - image: cimg/python:3.8
-    # Checkout the code as the first step. This is a dedicated CircleCI step.
-    # The python orb's install-packages step will install the dependencies from a Pipfile via Pipenv by default.
-    # Here we're making sure we use just use the system-wide pip. By default it uses the project root's requirements.txt.
-    # Then run your tests!
-    # CircleCI will report the results back to your VCS provider.
+      - image: python:3.9-alpine
+        environment:
+          PLAYWRIGHT_SERVER_WS_ENDPOINT: ws://127.0.0.1:8000/ws
+      - image: mcr.microsoft.com/playwright:v1.11.1
+        command: npx playwright@1.11.1 run-server 8000
+        environment:
+          npm_config_unsafe_perm: 'true'
     steps:
       - checkout
-      - python/install-packages:
-          pkg-manager: pip
-          # app-dir: ~/project/package-directory/  # If you're requirements.txt isn't in the root directory.
-          # pip-dependency-file: test-requirements.txt  # if you have a different name for your requirements file, maybe one that combines your runtime and test requirements.
+      - run:
+          name: Install dependencies
+          command: |
+            apk add build-base curl git
+            pip install git+https://github.com/microsoft/playwright-python@v1.11.2
+            pip install git+https://github.com/YusukeIwaki/playwright-python-remote
+      - run:
+          name: Install dependencies for test
+          command: |
+            apk add jpeg-dev zlib-dev
+            pip install pillow pytest
       - run:
           name: Run tests
-          # This assumes pytest is installed via the install-package step above
-          command: pytest
+          command: pytest tests/test_playwright_server.py
 
+  playwright_1_12:
+    docker:
+      - image: python:3.9-alpine
+        environment:
+          PLAYWRIGHT_SERVER_WS_ENDPOINT: ws://127.0.0.1:8000/ws
+      - image: mcr.microsoft.com/playwright:v1.12.3
+        command: npx playwright@1.12.3 run-server 8000
+        environment:
+          npm_config_unsafe_perm: 'true'
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            apk add build-base curl git
+            pip install git+https://github.com/microsoft/playwright-python@v1.12.1
+            pip install git+https://github.com/YusukeIwaki/playwright-python-remote
+      - run:
+          name: Install dependencies for test
+          command: |
+            apk add jpeg-dev zlib-dev
+            pip install pillow pytest
+      - run:
+          name: Run tests
+          command: pytest tests/test_playwright_server.py
+
+  playwright_1_13:
+    docker:
+      - image: python:3.9-alpine
+        environment:
+          PLAYWRIGHT_SERVER_WS_ENDPOINT: ws://127.0.0.1:8000/ws
+      - image: mcr.microsoft.com/playwright:v1.13.1
+        command: npx playwright@1.13.1 run-server 8000
+        environment:
+          npm_config_unsafe_perm: 'true'
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            apk add build-base curl git
+            pip install git+https://github.com/microsoft/playwright-python@v1.13.1
+            pip install git+https://github.com/YusukeIwaki/playwright-python-remote
+      - run:
+          name: Install dependencies for test
+          command: |
+            apk add jpeg-dev zlib-dev
+            pip install pillow pytest
+      - run:
+          name: Run tests
+          command: pytest tests/test_playwright_server.py
+
+  playwright_1_14:
+    docker:
+      - image: python:3.9-alpine
+        environment:
+          PLAYWRIGHT_SERVER_WS_ENDPOINT: ws://127.0.0.1:8000/ws
+      - image: mcr.microsoft.com/playwright:v1.14.1
+        command: npx playwright@1.14.1 run-server 8000
+        environment:
+          npm_config_unsafe_perm: 'true'
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            apk add build-base curl git
+            pip install git+https://github.com/microsoft/playwright-python@v1.14.1
+            pip install git+https://github.com/YusukeIwaki/playwright-python-remote
+      - run:
+          name: Install dependencies for test
+          command: |
+            apk add jpeg-dev zlib-dev
+            pip install pillow pytest
+      - run:
+          name: Run tests
+          command: pytest tests/test_playwright_server.py
