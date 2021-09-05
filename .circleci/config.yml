@@ -3,22 +3,39 @@ version: 2.1
 workflows:
   test:
     jobs:
-      - playwright_1_11
-      - playwright_1_12
-      - playwright_1_13
-      - playwright_1_14
+      # playwright_version
+      # https://mcr.microsoft.com/v2/playwright/tags/list
+      #
+      # playwright_python_version
+      # https://pypi.org/project/playwright/#history
+      #
+      - playwright_server:
+          playwright_version: 1.11.1
+          playwright_python_version: 1.11.2
+      - playwright_server:
+          playwright_version: 1.12.3
+          playwright_python_version: 1.12.1
+      - playwright_server:
+          playwright_version: 1.13.1
+          playwright_python_version: 1.13.1
+      - playwright_server:
+          playwright_version: 1.14.1
+          playwright_python_version: 1.14.1
 
-# https://mcr.microsoft.com/v2/playwright/tags/list
-# https://pypi.org/project/playwright/#history
 
 jobs:
-  playwright_1_11:
+  playwright_server:
+    parameters:
+      playwright_version:
+        type: string
+      playwright_python_version:
+        type: string
     docker:
       - image: python:3.9-alpine
         environment:
           PLAYWRIGHT_SERVER_WS_ENDPOINT: ws://127.0.0.1:8000/ws
-      - image: mcr.microsoft.com/playwright:v1.11.1
-        command: npx playwright@1.11.1 run-server 8000
+      - image: mcr.microsoft.com/playwright:v<< parameters.playwright_version >>
+        command: npx playwright@<< parameters.playwright_version >> run-server 8000
         environment:
           npm_config_unsafe_perm: 'true'
           npm_config_yes: 'true'
@@ -28,88 +45,7 @@ jobs:
           name: Install dependencies
           command: |
             apk add build-base curl git
-            pip install git+https://github.com/microsoft/playwright-python@v1.11.2
-            pip install git+https://github.com/YusukeIwaki/playwright-python-remote
-      - run:
-          name: Install dependencies for test
-          command: |
-            apk add jpeg-dev zlib-dev
-            pip install pillow pytest
-      - run:
-          name: Run tests
-          command: pytest tests/test_playwright_server.py
-
-  playwright_1_12:
-    docker:
-      - image: python:3.9-alpine
-        environment:
-          PLAYWRIGHT_SERVER_WS_ENDPOINT: ws://127.0.0.1:8000/ws
-      - image: mcr.microsoft.com/playwright:v1.12.3
-        command: npx playwright@1.12.3 run-server 8000
-        environment:
-          npm_config_unsafe_perm: 'true'
-          npm_config_yes: 'true'
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            apk add build-base curl git
-            pip install git+https://github.com/microsoft/playwright-python@v1.12.1
-            pip install git+https://github.com/YusukeIwaki/playwright-python-remote
-      - run:
-          name: Install dependencies for test
-          command: |
-            apk add jpeg-dev zlib-dev
-            pip install pillow pytest
-      - run:
-          name: Run tests
-          command: pytest tests/test_playwright_server.py
-
-  playwright_1_13:
-    docker:
-      - image: python:3.9-alpine
-        environment:
-          PLAYWRIGHT_SERVER_WS_ENDPOINT: ws://127.0.0.1:8000/ws
-      - image: mcr.microsoft.com/playwright:v1.13.1
-        command: npx playwright@1.13.1 run-server 8000
-        environment:
-          npm_config_unsafe_perm: 'true'
-          npm_config_yes: 'true'
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            apk add build-base curl git
-            pip install git+https://github.com/microsoft/playwright-python@v1.13.1
-            pip install git+https://github.com/YusukeIwaki/playwright-python-remote
-      - run:
-          name: Install dependencies for test
-          command: |
-            apk add jpeg-dev zlib-dev
-            pip install pillow pytest
-      - run:
-          name: Run tests
-          command: pytest tests/test_playwright_server.py
-
-  playwright_1_14:
-    docker:
-      - image: python:3.9-alpine
-        environment:
-          PLAYWRIGHT_SERVER_WS_ENDPOINT: ws://127.0.0.1:8000/ws
-      - image: mcr.microsoft.com/playwright:v1.14.1
-        command: npx playwright@1.14.1 run-server 8000
-        environment:
-          npm_config_unsafe_perm: 'true'
-          npm_config_yes: 'true'
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            apk add build-base curl git
-            pip install git+https://github.com/microsoft/playwright-python@v1.14.1
+            pip install git+https://github.com/microsoft/playwright-python@v<< parameters.playwright_python_version >>
             pip install git+https://github.com/YusukeIwaki/playwright-python-remote
       - run:
           name: Install dependencies for test
