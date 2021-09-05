@@ -21,6 +21,7 @@ jobs:
         command: npx playwright@1.11.1 run-server 8000
         environment:
           npm_config_unsafe_perm: 'true'
+          npm_config_yes: 'true'
     steps:
       - checkout
       - run:
@@ -47,6 +48,7 @@ jobs:
         command: npx playwright@1.12.3 run-server 8000
         environment:
           npm_config_unsafe_perm: 'true'
+          npm_config_yes: 'true'
     steps:
       - checkout
       - run:
@@ -73,6 +75,7 @@ jobs:
         command: npx playwright@1.13.1 run-server 8000
         environment:
           npm_config_unsafe_perm: 'true'
+          npm_config_yes: 'true'
     steps:
       - checkout
       - run:
@@ -99,6 +102,7 @@ jobs:
         command: npx playwright@1.14.1 run-server 8000
         environment:
           npm_config_unsafe_perm: 'true'
+          npm_config_yes: 'true'
     steps:
       - checkout
       - run:
