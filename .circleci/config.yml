@@ -21,6 +21,9 @@ workflows:
       - playwright_server:
           playwright_version: 1.14.1
           playwright_python_version: 1.14.1
+      - playwright_server:
+          playwright_version: 1.15.0
+          playwright_python_version: 1.15.0
       - browser_server
 
 
