@@ -1,4 +1,5 @@
 import asyncio
+import importlib.metadata
 from typing import Any, Dict, cast
 
 from greenlet import greenlet
@@ -23,6 +24,19 @@ class ConnectToBrowserContextManager:
         self._ws_endpoint = ws_endpoint
         self._slow_mo = slow_mo
         self._headers = headers
+
+    def _make_connection(self, dispatcher_fiber, object_factory, transport, loop) -> Connection:
+        if importlib.metadata.version('playwright') < '1.15.0':
+            return Connection(
+                dispatcher_fiber,
+                create_remote_object,
+                transport)
+        else:
+            return Connection(
+                dispatcher_fiber,
+                create_remote_object,
+                transport,
+                loop)
 
     def __enter__(self) -> SyncBrowser:
         loop: asyncio.AbstractEventLoop
@@ -51,10 +65,11 @@ Please use the Async API instead."""
             self._ws_endpoint,
             self._headers,
             self._slow_mo)
-        self._connection = Connection(
+        self._connection = self._make_connection(
             dispatcher_fiber,
             create_remote_object,
-            transport)
+            transport,
+            loop)
 
         g_self = greenlet.getcurrent()
 

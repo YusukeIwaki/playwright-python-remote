@@ -1,4 +1,5 @@
 import asyncio
+import importlib.metadata
 from typing import Any
 
 from greenlet import greenlet
@@ -15,6 +16,19 @@ class SyncPlaywrightRemoteContextManager:
     def __init__(self, ws_endpoint: str) -> None:
         self._playwright: SyncPlaywright
         self._ws_endpoint = ws_endpoint
+
+    def _make_connection(self, dispatcher_fiber, object_factory, transport, loop) -> Connection:
+        if importlib.metadata.version('playwright') < '1.15.0':
+            return Connection(
+                dispatcher_fiber,
+                create_remote_object,
+                transport)
+        else:
+            return Connection(
+                dispatcher_fiber,
+                create_remote_object,
+                transport,
+                loop)
 
     def __enter__(self) -> SyncPlaywright:
         loop: asyncio.AbstractEventLoop
@@ -38,11 +52,11 @@ Please use the Async API instead."""
                 loop.close()
 
         dispatcher_fiber = greenlet(greenlet_main)
-        self._connection = Connection(
+        self._connection = self._make_connection(
             dispatcher_fiber,
             create_remote_object,
-            WebSocketTransport(loop, self._ws_endpoint)
-        )
+            WebSocketTransport(loop, self._ws_endpoint),
+            loop)
 
         g_self = greenlet.getcurrent()
 
