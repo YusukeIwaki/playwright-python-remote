@@ -47,16 +47,16 @@ We have to prepare Playwright server using playwright CLI.
 In local development environment (Node.js is required), just execute:
 
 ```
-npx playwright@1.16.0 install && npx playwright@1.16.0 run-server
+npx playwright@1.17.0 install && npx playwright@1.17.0 run-server
 ```
 
 For deploying to PaaS servers, we can use Playwright official Docker image: https://hub.docker.com/_/microsoft-playwright
 
 ```Dockerfile
-FROM mcr.microsoft.com/playwright:v1.16.0
+FROM mcr.microsoft.com/playwright:v1.17.0
 
 WORKDIR /root
-RUN npm install playwright@1.16.0 && ./node_modules/.bin/playwright install
+RUN npm install playwright@1.17.0 && ./node_modules/.bin/playwright install
 CMD ["./node_modules/.bin/playwright", "run-server"]
 ```
 
@@ -67,7 +67,7 @@ Heroku example can be found [here](https://github.com/YusukeIwaki/playwright-pyt
 We can also share only one browser environment via WebSocket.
 
 ```
-npx playwright@1.16.0 install && npx playwright@1.16.0 launch-server firefox
+npx playwright@1.17.0 install && npx playwright@1.17.0 launch-server firefox
 ```
 
 Note that the functionality of CLI for launch-server is not so rich.
@@ -95,7 +95,7 @@ Unfortunately, `pip install playwright` cannot be executed on Alpine. We have to
 FROM python:3.9-alpine
 
 RUN apk add --no-cache --virtual .install-deps build-base curl git \
-    && pip install git+https://github.com/microsoft/playwright-python@v1.16.0 \
+    && pip install git+https://github.com/microsoft/playwright-python@v1.17.0 \
     && pip install git+https://github.com/YusukeIwaki/playwright-python-remote \
     && apk del .install-deps
 ```

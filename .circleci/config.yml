@@ -33,6 +33,12 @@ workflows:
       - browser_server:
           playwright_version: 1.16.3
           playwright_python_version: 1.16.1
+      - playwright_server:
+          playwright_version: 1.17.0
+          playwright_python_version: 1.17.0
+      - browser_server:
+          playwright_version: 1.17.0
+          playwright_python_version: 1.17.0
 
 
 jobs:
