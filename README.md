@@ -47,7 +47,7 @@ We have to prepare Playwright server using playwright CLI.
 In local development environment (Node.js is required), just execute:
 
 ```
-npx playwright@1.20.0 install && npx playwright@1.18.0 run-server
+npx playwright@1.20.0 install && npx playwright@1.20.0 run-server
 ```
 
 For deploying to PaaS servers, we can use Playwright official Docker image: https://hub.docker.com/_/microsoft-playwright
@@ -67,7 +67,7 @@ Heroku example can be found [here](https://github.com/YusukeIwaki/playwright-pyt
 We can also share only one browser environment via WebSocket.
 
 ```
-npx playwright@1.20.0 install && npx playwright@1.18.0 launch-server firefox
+npx playwright@1.20.0 install && npx playwright@1.20.0 launch-server --browser firefox
 ```
 
 Note that the functionality of CLI for launch-server is not so rich.
