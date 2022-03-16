@@ -9,16 +9,16 @@ workflows:
       # playwright_python_version
       # https://pypi.org/project/playwright/#history
       #
-      - playwright_server:
+      - playwright_server_119:
           playwright_version: 1.18.1
           playwright_python_version: 1.18.1
-      - browser_server:
+      - browser_server_119:
           playwright_version: 1.18.1
           playwright_python_version: 1.18.1
-      - playwright_server:
+      - playwright_server_119:
           playwright_version: 1.19.1
           playwright_python_version: 1.19.1
-      - browser_server:
+      - browser_server_119:
           playwright_version: 1.19.1
           playwright_python_version: 1.19.1
       - playwright_server:
@@ -30,7 +30,7 @@ workflows:
 
 
 jobs:
-  playwright_server:
+  playwright_server_119:
     parameters:
       playwright_version:
         type: string
@@ -61,7 +61,7 @@ jobs:
           name: Run tests
           command: pytest tests/test_playwright_server.py
 
-  browser_server:
+  browser_server_119:
     parameters:
       playwright_version:
         type: string
@@ -73,6 +73,68 @@ jobs:
           BROWSER_SERVER_WS_ENDPOINT: ws://127.0.0.1:8000/playwright
       - image: mcr.microsoft.com/playwright:v<< parameters.playwright_version >>
         command: /bin/bash -c "echo '{\"port\":8000,\"wsPath\":\"playwright\"}' > pl_sock && npx playwright@<< parameters.playwright_version >> launch-server chromium pl_sock"
+        environment:
+          npm_config_unsafe_perm: 'true'
+          npm_config_yes: 'true'
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            apk add build-base curl git
+            pip install git+https://github.com/microsoft/playwright-python@v<< parameters.playwright_python_version >>
+      - run:
+          name: Install dependencies for test
+          command: |
+            apk add jpeg-dev zlib-dev
+            pip install pillow pytest
+      - run:
+          name: Run tests
+          command: pytest tests/test_browser_server.py
+
+  playwright_server:
+    parameters:
+      playwright_version:
+        type: string
+      playwright_python_version:
+        type: string
+    docker:
+      - image: python:3.9-alpine
+        environment:
+          PLAYWRIGHT_SERVER_WS_ENDPOINT: ws://127.0.0.1:8000/ws
+      - image: mcr.microsoft.com/playwright:v<< parameters.playwright_version >>
+        command: npx playwright@<< parameters.playwright_version >> run-server --port 8000 --path /ws
+        environment:
+          npm_config_unsafe_perm: 'true'
+          npm_config_yes: 'true'
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            apk add build-base curl git
+            pip install git+https://github.com/microsoft/playwright-python@v<< parameters.playwright_python_version >>
+      - run:
+          name: Install dependencies for test
+          command: |
+            apk add jpeg-dev zlib-dev
+            pip install pillow pytest
+      - run:
+          name: Run tests
+          command: pytest tests/test_playwright_server.py
+
+  browser_server:
+    parameters:
+      playwright_version:
+        type: string
+      playwright_python_version:
+        type: string
+    docker:
+      - image: python:3.9-alpine
+        environment:
+          BROWSER_SERVER_WS_ENDPOINT: ws://127.0.0.1:8000/playwright
+      - image: mcr.microsoft.com/playwright:v<< parameters.playwright_version >>
+        command: /bin/bash -c "echo '{\"port\":8000,\"wsPath\":\"playwright\"}' > pl_sock && npx playwright@<< parameters.playwright_version >> launch-server --browser chromium --config pl_sock"
         environment:
           npm_config_unsafe_perm: 'true'
           npm_config_yes: 'true'
