@@ -40,11 +40,23 @@ workflows:
           playwright_version: 1.17.2
           playwright_python_version: 1.17.2
       - playwright_server:
-          playwright_version: 1.18.0
+          playwright_version: 1.18.1
           playwright_python_version: 1.18.1
       - browser_server:
-          playwright_version: 1.18.0
+          playwright_version: 1.18.1
           playwright_python_version: 1.18.1
+      - playwright_server:
+          playwright_version: 1.19.1
+          playwright_python_version: 1.19.1
+      - browser_server:
+          playwright_version: 1.19.1
+          playwright_python_version: 1.19.1
+      - playwright_server:
+          playwright_version: 1.20.0
+          playwright_python_version: 1.20.0
+      - browser_server:
+          playwright_version: 1.20.0
+          playwright_python_version: 1.20.0
 
 
 jobs:
