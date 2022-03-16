@@ -38,6 +38,17 @@ class ConnectToBrowserContextManager:
                 transport,
                 loop)
 
+    def _setup_browser(self, browser: BrowserImpl):
+        version = importlib.metadata.version('playwright')
+        if version < '1.17.0':
+            browser._is_remote = True
+            browser._is_connected_over_websocket = True
+        elif version < '1.19.0':
+            browser._should_close_connection_on_close = True
+        else:
+            browser._should_close_connection_on_close = True
+            browser._local_utils = self._playwright_impl._utils
+
     def __enter__(self) -> SyncBrowser:
         loop: asyncio.AbstractEventLoop
         own_loop = None
@@ -86,8 +97,7 @@ Please use the Async API instead."""
             "preLaunchedBrowser")
         assert pre_launched_browser
         browser = cast(BrowserImpl, from_channel(pre_launched_browser))
-        browser._is_remote = True
-        browser._is_connected_over_websocket = True
+        self._setup_browser(browser)
 
         def handle_transport_close() -> None:
             for context in browser.contexts:
