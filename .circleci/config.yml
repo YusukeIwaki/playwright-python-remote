@@ -10,36 +10,6 @@ workflows:
       # https://pypi.org/project/playwright/#history
       #
       - playwright_server:
-          playwright_version: 1.11.1
-          playwright_python_version: 1.11.2
-      - playwright_server:
-          playwright_version: 1.12.3
-          playwright_python_version: 1.12.1
-      - playwright_server:
-          playwright_version: 1.13.1
-          playwright_python_version: 1.13.1
-      - playwright_server:
-          playwright_version: 1.14.1
-          playwright_python_version: 1.14.1
-      - playwright_server:
-          playwright_version: 1.15.2
-          playwright_python_version: 1.15.3
-      - browser_server:
-          playwright_version: 1.15.2
-          playwright_python_version: 1.15.3
-      - playwright_server:
-          playwright_version: 1.16.3
-          playwright_python_version: 1.16.1
-      - browser_server:
-          playwright_version: 1.16.3
-          playwright_python_version: 1.16.1
-      - playwright_server:
-          playwright_version: 1.17.2
-          playwright_python_version: 1.17.2
-      - browser_server:
-          playwright_version: 1.17.2
-          playwright_python_version: 1.17.2
-      - playwright_server:
           playwright_version: 1.18.1
           playwright_python_version: 1.18.1
       - browser_server:
